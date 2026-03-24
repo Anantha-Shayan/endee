@@ -46,7 +46,7 @@ It also highlights **missing skills** and **AI powered improvements and suggesti
 
 ## 📂 Project Structure
 
-
+```text
 recommendation_system/<br>
 │<br>
 ├── app.py # Flask backend<br>
@@ -59,7 +59,7 @@ recommendation_system/<br>
 ├── uploads/ # Uploaded resumes<br>
 ├── requirements.txt<br>
 └── README.md<br>
-
+```
 
 ---
 
@@ -99,50 +99,62 @@ recommendation_system/<br>
 
 ### 1. Clone the Repository
 
-``` 
+```bash 
 git clone https://github.com/Anantha-Shayan/endee.git
-cd endee/recommendation_system ```
+cd endee/recommendation_system
+```
 
 ### 2. Create Virtual Environment
+```bash
 python -m venv venv
 source venv/bin/activate     # Linux/Mac
 venv\Scripts\activate        # Windows
+```
 
 ### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
 ### 4. Build Embeddings
+```bash
 python build_vector_store.py
+```
 
 ### 5. Run the Application
+```bash
 python app.py
+```
 
 ### 6. Open in Browser
+```bash
 http://localhost:5000
+```
 
 ---
 
-## ⚠️ Current Limitations
-Skill extraction is rule-based (can be improved with NLP)
-Match scoring may not always align perfectly with human intuition
-No user authentication (yet)
-Limited dataset (depends on jobs.json)
+## ⚠️ Current Limitations<br>
+Skill extraction is rule-based (can be improved with NLP)<br>
+Match scoring may not always align perfectly with human intuition<br>
+No user authentication (yet)<br>
+Limited dataset (depends on jobs.json)<br>
 
 ## 🔥 Future Improvements
-✅ Better skill extraction using NLP / LLMs
-✅ Weighted scoring (skills > experience > keywords)
-✅ Real-time job scraping (LinkedIn, Indeed APIs)
-✅ Deploy using Docker + Cloud (AWS/GCP)
-✅ Expand Endee into a full retrieval engine
-✅ Add recruiter-side AI Hiring Copilot
-✅ Resume feedback & improvement suggestions
-💡 Use Cases
-Students preparing for placements
-Job seekers improving resumes
-Recruiters screening candidates
-Demonstration of ML + backend integration
+✅ Better skill extraction using NLP / LLMs<br>
+✅ Weighted scoring (skills > experience > keywords)<br>
+✅ Real-time job scraping (LinkedIn, Indeed APIs)<br>
+✅ Deploy using Docker + Cloud (AWS/GCP)<br>
+✅ Expand Endee into a full retrieval engine<br>
+✅ Add recruiter-side AI Hiring Copilot<br>
+✅ Resume feedback & improvement suggestions<br>
+
+💡 Use Cases<br>
+Students preparing for placements<br>
+Job seekers improving resumes<br>
+Recruiters screening candidates<br>
+Demonstration of ML + backend integration<br>
+
 🧑‍💻 Author
 
 Anantha Shayan
 BTech CSE (AI & ML)
-Aspiring Machine Learning Engineer
