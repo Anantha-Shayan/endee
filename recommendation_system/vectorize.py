@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 from endee import Endee, Precision
+from endee.exceptions import NotFoundException
 import openai
 import numpy as np
 import pickle
@@ -16,6 +17,26 @@ def get_model():
     return model
 
 client = Endee()
+
+def ensure_job_index():
+    try:
+        return client.get_index('job_index')
+    except NotFoundException:
+        print('job_index not found, rebuilding from jobs.json')
+        build_job_vector_store()
+        return client.get_index('job_index')
+    except Exception as exc:
+        errstr = str(exc).lower()
+        if 'missing or incompatible index metadata' in errstr:
+            print('Index metadata issue detected; deleting and rebuilding job_index')
+            try:
+                client.delete_index('job_index')
+            except Exception as delete_exc:
+                print('Could not delete job_index:', delete_exc)
+            build_job_vector_store()
+            return client.get_index('job_index')
+        raise
+
 # Store Jobs in FAISS
 def build_job_vector_store():
 
@@ -39,7 +60,7 @@ def build_job_vector_store():
 
     dimension = embeddings.shape[1]
 
-    # index = faiss.IndexFlatL2(dimension) # Eulidean dist
+    # index = faiss.IndexFlatL2(dimension) # Euclidean dist
     try:
         client.create_index(
             name='job_index',
@@ -47,11 +68,41 @@ def build_job_vector_store():
             space_type="cosine",
             precision=Precision.INT8
         )
-    except:
-        print("Index already exists")
+        print('job_index created successfully')
+    except Exception as exc:
+        msg = str(exc).lower()
+        if 'already exists' in msg or 'conflict' in msg:
+            print('job_index already exists')
+        else:
+            print('Error creating job_index:', exc)
+            try:
+                client.delete_index('job_index')
+                print('Deleted job_index due to metadata issue, recreating...')
+                client.create_index(
+                    name='job_index',
+                    dimension=dimension,
+                    space_type="cosine",
+                    precision=Precision.INT8
+                )
+            except Exception as exc2:
+                print('Failed to recreate job_index:', exc2)
+                raise
 
-    # Save index
-    index = client.get_index('job_index')
+    # Ensure index object is valid; if not, rebuild
+    try:
+        index = client.get_index('job_index')
+    except Exception as exc:
+        print('Error fetching job_index:', exc)
+        if 'missing or incompatible index metadata' in str(exc).lower():
+            print('Rebuilding job_index due to incompatible metadata')
+            try:
+                client.delete_index('job_index')
+            except Exception as delete_exc:
+                print('Could not delete job_index:', delete_exc)
+            build_job_vector_store()
+            index = client.get_index('job_index')
+        else:
+            raise
 
     points = []
     for i, (job, vector) in enumerate(zip(jobs, embeddings)):
@@ -94,13 +145,14 @@ def embed_resume_query(sections):
 
     embedding = get_model().encode([combined_text])
 
-    return embedding
+    # Convert to list[float] for Endee QueryRequest requirements.
+    return embedding[0].astype(float).tolist()
 
 
 # Search Matching Jobs
 def search_jobs(sections, resume_text, top_k=3):
 
-    index = client.get_index('job_index')
+    index = ensure_job_index()
 
     resume_exp = extract_years_of_experience(resume_text)
     
@@ -109,10 +161,6 @@ def search_jobs(sections, resume_text, top_k=3):
         vector=query_embedding,
         top_k=top_k
     )
-
-    # for _ in range(10):
-    #     start = time.perf_counter()
-    distances, indices = index.search(np.array(query_embedding), top_k)
     #     end = time.perf_counter()
     #     times.append((end - start) * 1000)
 
