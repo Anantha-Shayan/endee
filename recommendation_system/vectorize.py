@@ -94,7 +94,7 @@ def embed_resume_query(sections):
 
     embedding = get_model().encode([combined_text])
 
-    return embedding
+    return embedding[0].tolist()
 
 
 # Search Matching Jobs
@@ -112,7 +112,7 @@ def search_jobs(sections, resume_text, top_k=3):
 
     # for _ in range(10):
     #     start = time.perf_counter()
-    distances, indices = index.search(np.array(query_embedding), top_k)
+    # distances, indices = index.search(np.array(query_embedding), top_k)
     #     end = time.perf_counter()
     #     times.append((end - start) * 1000)
 
@@ -139,7 +139,7 @@ def search_jobs(sections, resume_text, top_k=3):
 
     for i, item in enumerate(results_db):
         job = item["meta"]
-        score = item["score"]
+        score = item["similarity"]
 
         # Experience filter
         if resume_exp < job.get("min_experience", 0):

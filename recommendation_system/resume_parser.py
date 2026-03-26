@@ -13,7 +13,7 @@ import io
 #import flask
 # import requests
 # from fastapi import FastAPI, HTTPException
-import streamlit as st
+#import streamlit as st
 # from Layout_detection_and_Semantic_segmentation import process_document_for_layout_and_semantic
 import pythoncom
 
