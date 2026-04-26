@@ -95,40 +95,96 @@ recommendation_system/<br>
 
 ---
 
-## 🚀 Setup Instructions
 
-### 1. Clone the Repository
+---
 
-```bash 
-git clone https://github.com/Anantha-Shayan/endee.git
+# 🚀 Setup Guide: Running Recommendation System with endee vectordb
+
+## 1. Prerequisites
+
+- **Docker** installed ([Get Docker](https://docs.docker.com/get-docker/))
+- **Python 3.8+** (for the recommendation system)
+- **Git** (optional, for cloning the repo)
+
+## 2. Clone the Repository
+
+```bash
+git clone https://github.com/<your-org-or-username>/endee.git
 cd endee/recommendation_system
 ```
 
-### 2. Create Virtual Environment
+## 3. Prepare Data Directory for endee vectordb
+
+### Linux / Mac
+
 ```bash
-python -m venv venv
-source venv/bin/activate     # Linux/Mac
-venv\Scripts\activate        # Windows
+mkdir -p ../endee-data
+chmod 777 ../endee-data
 ```
 
-### 3. Install Dependencies
+### Windows (PowerShell)
+
+```powershell
+mkdir ..\endee-data
+# No chmod needed, but ensure your user has full access to this folder
+```
+
+## 4. Run endee vectordb with Docker
+
+### Linux / Mac
+
+```bash
+docker run \
+  --ulimit nofile=100000:100000 \
+  -p 8080:8080 \
+  -v "$PWD/../endee-data:/data" \
+  --name endee-server \
+  --restart unless-stopped \
+  endeeio/endee-server:latest
+```
+
+### Windows (PowerShell)
+
+```powershell
+docker run `
+  --ulimit nofile=100000:100000 `
+  -p 8080:8080 `
+  -v ${PWD}/../endee-data:/data `
+  --name endee-server `
+  --restart unless-stopped `
+  endeeio/endee-server:latest
+```
+> If you get a permissions error, ensure Docker Desktop is allowed to access your drive and the `endee-data` folder.
+
+## 5. Install Python Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Build Embeddings
-```bash
-python build_vector_store.py
-```
+## 6. Configure Your App to Use endee vectordb
 
-### 5. Run the Application
+- By default, the vectordb server runs at `http://localhost:8080`.
+- Ensure your app connects to this endpoint.
+
+## 7. Run the Recommendation System
+
 ```bash
 python app.py
 ```
 
-### 6. Open in Browser
+## 8. Stopping and Cleaning Up
+
+To stop the vectordb server:
+
 ```bash
-http://localhost:5000
+docker stop endee-server
+```
+
+To remove the container:
+
+```bash
+docker rm endee-server
 ```
 
 ---
