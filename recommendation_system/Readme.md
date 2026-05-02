@@ -143,13 +143,18 @@ docker build -f infra/Dockerfile \
 ### Windows (PowerShell)
 
 ```powershell
-docker run `
-  --ulimit nofile=100000:100000 `
-  -p 8080:8080 `
-  -v ${PWD}/../endee-data:/data `
-  --name endee-server `
-  --restart unless-stopped `
-  endeeio/endee-server:latest
+mkdir -p /workspaces/endee/data
+sudo chown 1000:1000 /workspaces/endee/data
+
+docker rm -f endee 2>/dev/null || true
+docker run -d --name endee \
+  -p 8080:8080 \
+  -v /workspaces/endee/data:/data \
+  -e NDD_DATA_DIR=/data \
+  -e NDD_SERVER_PORT=8080 \
+  -e NDD_LOG_LEVEL=info \
+  -e NDD_NUM_THREADS=0 \
+  endee:latest
 ```
 > If you get a permissions error, ensure Docker Desktop is allowed to access your drive and the `endee-data` folder.
 
