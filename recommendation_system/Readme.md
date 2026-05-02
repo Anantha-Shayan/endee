@@ -134,13 +134,10 @@ mkdir ..\endee-data
 ### Linux / Mac
 
 ```bash
-docker run \
-  --ulimit nofile=100000:100000 \
-  -p 8080:8080 \
-  -v "$PWD/../endee-data:/data" \
-  --name endee-server \
-  --restart unless-stopped \
-  endeeio/endee-server:latest
+docker build -f infra/Dockerfile \
+  --build-arg BUILD_ARCH=avx2 \
+  --build-arg DEBUG=false \
+  -t endee:latest .
 ```
 
 ### Windows (PowerShell)
