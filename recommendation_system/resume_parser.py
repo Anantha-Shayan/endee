@@ -5,7 +5,7 @@ from PIL import ImageDraw
 import pandas as pd
 #import pytesseract
 #import easyocr # more accurate
-import docx2pdf # requires MSWord(Windows) to be installed
+#import docx2pdf # requires MSWord(Windows) to be installed
 #import pdf2image #requires poppler installation
 import fitz #PyMuPdf
 import tempfile
@@ -15,7 +15,7 @@ import io
 # from fastapi import FastAPI, HTTPException
 #import streamlit as st
 # from Layout_detection_and_Semantic_segmentation import process_document_for_layout_and_semantic
-import pythoncom
+#import pythoncom
 import subprocess
 import os
 import tempfile

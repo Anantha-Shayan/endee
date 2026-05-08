@@ -1,6 +1,6 @@
 services:
   endee-oss:
-    image: endee-oss:latest
+    image: endeeio/endee-server:latest
     container_name: endee-oss
     ports:
       - "8080:8080"
@@ -25,6 +25,22 @@ services:
       - endee-data:/data
     restart: unless-stopped
 
+  recommendation-app:
+    build:
+      context: .
+      dockerfile: ./recommendation_system/Dockerfile
+    container_name: recommendation-app
+    ports:
+      - "8000:8000"
+    depends_on:
+      endee-oss:
+        condition: service_healthy
+    environment:
+      - ENDEE_ENDPOINT=http://endee-oss:8080
+      - ENDEE_HOST=endee-oss
+    volumes:
+      - ./recommendation_system:/app
+    restart: unless-stopped
 volumes:
   # Modify the 'device' path below to change the host directory used for data persistence
   endee-data:

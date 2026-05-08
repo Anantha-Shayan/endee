@@ -6,6 +6,7 @@ import pickle
 import json
 import re
 import time
+import os
 
 model = None
 
@@ -15,7 +16,9 @@ def get_model():
         model = SentenceTransformer("all-MiniLM-L6-v2")
     return model
 
-client = Endee()
+endee_host = os.getenv('ENDEE_HOST', 'endee-oss')
+client = Endee(f"http://endee-oss:8080")
+
 # Store Jobs in FAISS
 def build_job_vector_store():
 
