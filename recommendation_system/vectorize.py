@@ -16,8 +16,8 @@ def get_model():
         model = SentenceTransformer("all-MiniLM-L6-v2")
     return model
 
-endee_host = os.getenv('ENDEE_HOST', 'endee-oss')
-client = Endee(f"http://endee-oss:8080")
+client = Endee()
+client.set_base_url("http://endee-oss:8080/api/v1")
 
 # Store Jobs in FAISS
 def build_job_vector_store():
