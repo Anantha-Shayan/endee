@@ -1,0 +1,13 @@
+# Core scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Browser-based fallback (optional but recommended)
+playwright>=1.43.0
+
+# Utilities
+fake-useragent>=1.5.0
+
+# After installing, also run:
+#   playwright install chromium
